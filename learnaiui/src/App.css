@@ -1,0 +1,97 @@
+h1 {
+    text-align: center;
+}
+
+.formContainer {
+    text-align: center;
+}
+
+.formContainer div {
+    padding-top: 1em;
+}
+
+.formContainer div input,
+select {
+    padding: .5em;
+    width: 60%;
+}
+
+@media screen and ( max-width: 480px) {
+    .formContainer div input,
+    select {
+        padding: .5em;
+        width: 90%;
+    }
+}
+
+.items {
+    padding: 1em;
+    /* background-color: red; */
+}
+
+.items .item {
+    border: .1em solid black;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    display: flex;
+    flex-direction: "row";
+    justify-content: 'space-between';
+    /* background-color: yellow; */
+}
+
+.items .item .itemInput {
+    flex: 10
+}
+
+.items .item .itemInput textarea {
+    width: 95%;
+    height: 10em;
+    padding: .5em;
+}
+
+.items .item .itemSelectContainer {
+    background-color: white;
+    flex: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+}
+
+.items .item .itemSelectContainer select {
+    width: 100%;
+}
+
+.App .editContainer {
+    background-color: lightgrey;
+    height: 100%;
+    width: 100%;
+    position: absolute;
+    top: 0;
+    z-index: 12345678;
+}
+
+.App .editContainer .editItem {
+    position: relative;
+    background-color: white;
+    height: 80%;
+    width: 80%;
+    margin: auto;
+    align-items: center;
+    text-align: center;
+}
+
+.App .editContainer .editItem textarea {
+    height: 15em;
+    width: 95%;
+    margin-bottom: 1em;
+}
+
+.App .editContainer .editItem button {
+    margin-top: 1em;
+}
+
+.App .addbtn {
+    align-items: center;
+    text-align: center;
+}
