@@ -3,7 +3,7 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 # import database functions
-from db import update, insert, readAll
+from db import update, insert, readAll, readAll_
 
 # FLASK_APP=index.py
 # $env:FLASK_APP="index.py"
@@ -16,7 +16,7 @@ CORS(app)
 @app.route("/index", methods=['GET','POST'])
 def getAll():
   cors = CORS(app, resources={r"/*": {"origins": '*'}})
-  data = readAll()
+  data = readAll_()
   if len( data ) > 2:
     return jsonify(data)
   else:
@@ -29,7 +29,7 @@ def updateRoute():
   if request.method == 'POST':
     data = request.json 
     print( data )
-    result = update( data['id'], data['sentence'], data['sentiment'] )
+    result = update( data['id'], data['sentence'], data['sentiment'], data['language'] )
     if result > 0:
       return jsonify(['Data Updated', 204])
     elif result == False:
@@ -43,7 +43,7 @@ def add():
   if request.method == 'POST':
     data = request.json 
     print( data )
-    result = insert( data['sentence'], data['sentiment'] )
+    result = insert( data['sentence'], data['sentiment'], data['language'] )
     if result > 0:
       return jsonify(['Data Added', 204])
     elif result == False:

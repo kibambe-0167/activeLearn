@@ -33,13 +33,15 @@ function App() {
       )
       .catch(error => console.log('error', error));
   }
+
   const edit = (index) => {
     let change = data.filter((val) => val[0]===index );
-    // console.log( change[0][0] )
-    var [ indx, sentence, sentiment ] = change[0];
+    console.log( change[0] )
+    var [ indx, sentence, language, sentiment, ] = change[0];
     formData['sentence'] = sentence;
     formData['sentiment'] = sentiment;
     formData['index'] = index;
+    formData['language'] = language;
     // console.log( indx, sentence, sentiment )
     // console.log( formData )
     setIsEdit(true)
@@ -47,14 +49,14 @@ function App() {
 
   const pyUpdate = async () => {
     console.log( formData )
-    var [ index, sentence, sentiment ] = [formData['index'],formData['sentence'],formData['sentiment'] ];
-    console.log( index, sentence, sentiment )
-    if( sentence && sentence.length > 0 && sentiment ) {
+    var [ index, sentence, sentiment, language ] = [formData['index'],formData['sentence'],formData['sentiment'], formData['language'] ];
+    console.log( index, sentence, sentiment, language )
+    if( sentence && sentence.length > 0 && sentiment && language ) {
       
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
-      var raw = JSON.stringify( {'id':index,'sentence':sentence, 'sentiment':sentiment} );
+      var raw = JSON.stringify( {'id':index,'sentence':sentence, 'sentiment':sentiment, 'language':language} );
 
       var requestOptions = {
         method: 'POST',
@@ -79,14 +81,14 @@ function App() {
   // post data
   const pyPost = async () => {
     console.log( formData )
-    var [sentence, sentiment ] = [formData['sentence'],formData['sentiment'] ];
-    console.log( sentence, sentiment )
+    var [sentence,sentiment,language]=[formData['sentence'],formData['sentiment'],formData['language'] ];
+    console.log( sentence, sentiment, language )
 
-    if( sentence && sentence.length > 0 && sentiment ) {
+    if( sentence && sentence.length > 0 && sentiment && language ) {
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
-      var raw = JSON.stringify( {'sentence':sentence, 'sentiment':sentiment} );
+      var raw = JSON.stringify( {'sentence':sentence, 'sentiment':sentiment, 'language':language} );
 
       var requestOptions = {
         method: 'POST',
@@ -113,7 +115,6 @@ function App() {
   useEffect(() => {
 
     pyGetAll()
-    // console.log("Done........")
   },[])
 
 
@@ -134,12 +135,16 @@ function App() {
               <div className='itemInput' >
                 <textarea disabled={true} value={val[1]} onChange={(e) => "" } />
               </div>
-              <div className='itemSelectContainer' >
-                <div >
+              <div className='meta' >
+                <div className='label' >
                   { val[2] == 1 ? "Positve" : val[2] == -1 ? "Negative" : "Neutral" }
                 </div>
 
-                <div > Last Changed { val[3] } </div>
+                <div className='lastChangedDate' > Last Changed { val[4] } </div>
+
+                <div className='lang' >
+                  { val[3] == 0 ? "English" : val[3]==1 ? "Setswana" : val[3]==2?"Sepedi" : "No Target Language" } 
+                </div>
 
                 <div > <button onClick={() => edit(val[0]) } > Edit </button> </div>
 
@@ -168,11 +173,29 @@ function App() {
                     <option value={"-1"} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Negative</option>
                     <option value={"1"} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Positive</option>
                     <option value={"0"} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Neutral</option>
+                    {/* new labels */}
+                    <option value={"2"} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Not Sentiment</option>
+                    <option value={"3"} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Mix Sentiment</option>
+                    {/* <option value={"0"} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Neutral</option> */}
                   </select>
                 </div>
 
-                <div className='' > <button onClick={() => pyUpdate() } > Save Changes </button> </div>
+                <div >
+                  <select value={formData['language'] } >
+                    <option value={"1"} onClick={ e => setFormData({ ...formData, "language": e.target.value }) } >Setswana</option>
+
+                    <option value={"2"} onClick={ e => setFormData({ ...formData, "language": e.target.value }) } >Sepedi</option>
+
+                    <option value={"0"} onClick={ e => setFormData({ ...formData, "language": e.target.value }) } >English</option>
+
+                    <option value={"3"} onClick={ e => setFormData({ ...formData, "language": e.target.value }) } >No target Language</option>
+                    
+                  </select>
+                </div>
               </div>
+
+              <hr />
+              <div className='' > <button onClick={() => pyUpdate() } > Save Changes </button> </div>
             </div>
         </div>
       }
@@ -192,9 +215,21 @@ function App() {
               <div className='itemSelectContainer' >
                 <div >
                   <select value={formData['sentiment']} >
-                    <option value={"-1"} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Negative</option>
-                    <option value={"1"} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Positive</option>
-                    <option value={"0"} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Neutral</option>
+                    <option value={-1} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Negative</option>
+                    <option value={1} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Positive</option>
+                    <option value={0} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Neutral</option>
+                    {/* new labels */}
+                    <option value={2} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Not Sentiment</option>
+                    <option value={3} onClick={ e => setFormData({ ...formData, "sentiment": e.target.value }) } >Mix Sentiment</option>
+                  </select>
+                </div>
+                <div >
+                  <select value={formData['language'] } >
+                    <option value={1} onClick={ e => setFormData({ ...formData, "language": e.target.value }) } >Setswana</option>
+                    <option value={2} onClick={ e => setFormData({ ...formData, "language": e.target.value }) } >Sepedi</option>
+                    <option value={0} onClick={ e => setFormData({ ...formData, "language": e.target.value }) } >English</option>
+                    <option value={3} onClick={ e => setFormData({ ...formData, "language": e.target.value }) } >No target Language</option>
+                    
                   </select>
                 </div>
 
